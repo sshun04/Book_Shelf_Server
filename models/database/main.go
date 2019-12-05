@@ -1,7 +1,6 @@
 package database
 
 import (
-	"bookstorage_web/server/models"
 	"github.com/jinzhu/gorm"
 )
 
@@ -11,12 +10,12 @@ const dbFileName  string = "test.sqlite3"
 var db *gorm.DB
 var transactionDB *gorm.DB
 
-func DBInit()  {
+func DBInit(model interface{})  {
 	db, err := gorm.Open(dbDeviceName, dbFileName)
 	if err != nil {
 		panic("failure open database:Init")
 	}
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&model)
 	defer db.Close()
 }
 

@@ -1,4 +1,4 @@
-package toml
+package conf
 
 import "github.com/BurntSushi/toml"
 
@@ -9,6 +9,7 @@ type Config struct {
 type AuthConfig struct {
 	FaceBookClientID string  `toml:"facebookClientID"`
 	FaceBookClientSecret string `toml:"facebookClientSecret"`
+	CallBackUrl string `toml:"callbackUrl"`
 }
 
 func GetConfig() *Config {

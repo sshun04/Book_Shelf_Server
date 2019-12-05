@@ -5,10 +5,9 @@ import (
 	"bookstorage_web/server/models"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var dbDeviceName string = "sqlite3"
@@ -25,16 +24,6 @@ func main() {
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal("ListenAndServe:", nil)
 	}
-}
-
-
-func dbInitUserTable() {
-	db, err := gorm.Open(dbDeviceName, dbFileName)
-	if err != nil {
-		panic("failure open database:Init")
-	}
-	db.Table("active_users").AutoMigrate(&models.User{})
-	defer db.Close()
 }
 
 
