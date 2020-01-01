@@ -11,7 +11,7 @@ func TestDBInit(t *testing.T) {
 		t.Error(err.Error())
 		return
 	}
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{}, &model.BookCommon{}, &model.BookPersonal{})
 	if !db.HasTable(&model.User{}) {
 		db.CreateTable(&model.User{})
 	}
@@ -37,15 +37,23 @@ func TestCreate(t *testing.T) {
 		t.Error(error.Error())
 		return
 	}
-	e := db.Create(&model.User{
-		Name:         "Shu",
-		EmailAddress: "sksks@gmail.com",
-		Password:     "skskskksks",}).Error
-
-	if e != nil {
-		t.Error(e.Error())
+	if err := db.Create(&model.User{
+		Name:         "S",
+		EmailAddress: "ss@gmail.com",
+		Password:     "ss",}).Error; err != nil {
+		t.Error("Error create User :", err.Error())
 	}
-
+	if err := db.Create(&model.BookCommon{
+		ISBN:      11111,
+		Title:     "学校のジュリエット",
+		Author:    "ssss",
+		Publisher: "sc.inc",
+	}).Error; err != nil {
+		t.Error("Error create BookCommon :", err.Error())
+	}
+	if err := db.Create(&model.BookPersonal{State: "未読"}).Error; err != nil {
+		t.Error("Error create BookPersonal :", err.Error())
+	}
 	if err := db.Close(); err != nil {
 		t.Error(err.Error())
 	}
