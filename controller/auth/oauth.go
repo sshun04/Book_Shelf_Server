@@ -34,9 +34,9 @@ func (s *Server) GetConnect() *oauth2.Config {
 	config := &oauth2.Config{
 		ClientID:     s.clientID,
 		ClientSecret: s.clientSecret,
-		Endpoint: s.endPoint,
-		RedirectURL: s.callbackUrl,
-		Scopes:      []string{"email"},
+		Endpoint:     s.endPoint,
+		RedirectURL:  s.callbackUrl,
+		Scopes:       []string{"email"},
 	}
 
 	return config
@@ -62,7 +62,7 @@ func (s *Server) Authorize(ctx *gin.Context) {
 	//ctx.JSON(http.StatusOK,state)
 
 	ctx.Redirect(http.StatusFound, url)
-	ctx.JSON(http.StatusOK,url)
+	ctx.JSON(http.StatusOK, url)
 }
 
 func (s *Server) Callback(ctx *gin.Context) {
@@ -91,8 +91,9 @@ func (s *Server) Callback(ctx *gin.Context) {
 
 	ctx.Writer.WriteHeader(http.StatusOK)
 
-	// TODO　アクセストークンをレスポンス
-	ctx.JSON(http.StatusOK,token.AccessToken)
+	// TODO　アクセストークンはデータベースに保存　
+	//TODO　　　　Jwtを発行してレスポンス　Jwtで認証、ユーザーを特定、ユーザー情報を取得
+	ctx.JSON(http.StatusOK, token.AccessToken)
 }
 
 func validateState(r *http.Request) error {

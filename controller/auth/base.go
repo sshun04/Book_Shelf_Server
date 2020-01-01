@@ -8,7 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"net/http"
 )
+
+
+func MustAuthenticated() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := ValidateAccessToken(c); err != nil {
+			fmt.Println(err.Error())
+			c.JSON(400, gin.H{"message": "Not authenticated"})
+			c.Abort()
+		}else {
+			c.Next()
+		}
+	}
+}
 
 func SignUp(ctx *gin.Context) {
 	var user model.User
@@ -54,13 +68,15 @@ func SignUp(ctx *gin.Context) {
 	user.Password = string(hash)
 	fmt.Println("コンバート後のパスワード: ", user.Password)
 
-	if savingerr := dao.Create(user,""); savingerr != nil {
+	if savingerr := dao.Create(user, ""); savingerr != nil {
 		fmt.Println(savingerr.Error())
 		return
 	}
+
+	jwtAccessToken := GetJwtAccessToken(user)
+	ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
 }
 
+func Login() {
 
-
-
-
+}
