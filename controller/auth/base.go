@@ -63,8 +63,19 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
 }
 
+func Login(ctx *gin.Context) {
+	var user model.User
 
-func Login() {
+	err := json.NewDecoder(ctx.Request.Body).Decode(&user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	if user.EmailAddress == "" {
+		ctx.JSON(http.StatusNotAcceptable, "email cannot be blank")
+	}
+	if user.Password == "" {
+		ctx.JSON(http.StatusNotAcceptable, "password cannot be blank")
+	}
 
 }
 

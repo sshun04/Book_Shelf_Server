@@ -44,16 +44,23 @@ func Create(dbModel interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 	db.Create(dbModel)
+	defer db.Close()
 	return nil
 }
 
-func GetUser()  {
-
+func SearchUser(emailAddress string) (model.User, error) {
+	var user model.User
+	db, err := GormConnect()
+	if err != nil {
+		return user, err
+	}
+	db.Table("users").Where("email_address = ?",emailAddress).First(&user)
+	defer db.Close()
+	return user,nil
 }
 
-func GetBooksById(ownerId uint)  {
+func GetBooksById(ownerId uint) {
 
 }
 

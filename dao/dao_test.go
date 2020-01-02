@@ -33,9 +33,9 @@ func TestCreate(t *testing.T) {
 	if err := DBInit(); err != nil {
 		t.Error(err.Error())
 	}
-	db, error := GormConnect()
-	if error != nil {
-		t.Error(error.Error())
+	db, err := GormConnect()
+	if err != nil {
+		t.Error(err.Error())
 		return
 	}
 
@@ -78,11 +78,23 @@ func TestCreate(t *testing.T) {
 	if err := db.Close(); err != nil {
 		t.Error(err.Error())
 	}
+	defer db.Close()
 }
 
 func TestGetUser(t *testing.T) {
-	db ,_:= GormConnect()
+	db, _ := GormConnect()
 	var users []model.User
 	table := db.Order("created_at desc").Find(&users)
 	fmt.Print(table)
+	defer db.Close()
+}
+
+func TestSearchUser(t *testing.T) {
+	if user, err := SearchUser("kk@gmail.com"); err != nil {
+		t.Error(err.Error())
+	} else if user.Name == "" && user.EmailAddress =="" && user.Password== "" {
+		t.Error("user is blank")
+	}else {
+		fmt.Println(user.Name)
+	}
 }
