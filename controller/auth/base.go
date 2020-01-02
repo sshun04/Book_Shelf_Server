@@ -51,7 +51,7 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
-	hashedPassword := HashStringPassWord(user.Password)
+	hashedPassword := hashStringPassWord(user.Password)
 	user.Password = hashedPassword
 
 	if savingerr := dao.Create(user); savingerr != nil {
@@ -63,14 +63,15 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
 }
 
-func HashStringPassWord(password string) string {
+
+func Login() {
+
+}
+
+func hashStringPassWord(password string) string {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return string(hashedPassword)
-}
-
-func Login() {
-
 }
