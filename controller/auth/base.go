@@ -11,14 +11,13 @@ import (
 	"net/http"
 )
 
-
 func MustAuthenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := ValidateAccessToken(c); err != nil {
 			fmt.Println(err.Error())
 			c.JSON(400, gin.H{"message": "Not authenticated"})
 			c.Abort()
-		}else {
+		} else {
 			c.Next()
 		}
 	}
@@ -40,15 +39,11 @@ func SignUp(ctx *gin.Context) {
 		ctx.Error(err).JSON()
 		return
 	}
-	fmt.Println(user.Name)
-
 	if user.EmailAddress == "" {
 		error.Message = "Emailは必須です"
 		ctx.Error(err).JSON()
 		return
 	}
-
-	fmt.Println(user.EmailAddress)
 
 	if user.Password == "" {
 		error.Message = "パスワードは必須です。"
@@ -56,25 +51,24 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	hashedPassword := HashStringPassWord(user.Password)
+	user.Password = hashedPassword
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("パスワード: ", user.Password)
-	fmt.Println("ハッシュ化されたパスワード", hash)
-
-	user.Password = string(hash)
-	fmt.Println("コンバート後のパスワード: ", user.Password)
-
-	if savingerr := dao.Create(user, ""); savingerr != nil {
+	if savingerr := dao.Create(user); savingerr != nil {
 		fmt.Println(savingerr.Error())
 		return
 	}
 
 	jwtAccessToken := GetJwtAccessToken(user)
 	ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
+}
+
+func HashStringPassWord(password string) string {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return string(hashedPassword)
 }
 
 func Login() {

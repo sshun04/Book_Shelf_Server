@@ -91,8 +91,8 @@ func (s *Server) Callback(ctx *gin.Context) {
 
 	ctx.Writer.WriteHeader(http.StatusOK)
 
-	// TODO　アクセストークンはデータベースに保存　
-	//TODO　　　　Jwtを発行してレスポンス　Jwtで認証、ユーザーを特定、ユーザー情報を取得
+	// TODO　ユーザー情報を取得　　
+	//TODO　　Jwtを発行してレスポンス
 	ctx.JSON(http.StatusOK, token.AccessToken)
 }
 

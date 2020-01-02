@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func GetJwtAccessToken(user model.User) string{
+func GetJwtAccessToken(user model.User) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	// claimsのセット
@@ -30,10 +30,10 @@ func GetJwtAccessToken(user model.User) string{
 }
 
 func ValidateAccessToken(c *gin.Context) error {
-	return JwtMiddleware.CheckJWT(c.Writer,c.Request)
+	return jwtMiddleware.CheckJWT(c.Writer, c.Request)
 }
 
-var JwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
+var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 		conf, _ := config.GetConfig()
 		return []byte(os.Getenv(conf.JwtConfig.SignInKey)), nil

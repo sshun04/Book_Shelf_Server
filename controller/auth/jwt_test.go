@@ -16,3 +16,7 @@ func TestGetJwtAccessToken(t *testing.T) {
 
 	fmt.Println(accessToken)
 }
+
+func TestValidateAccessToken(t *testing.T) {
+
+}

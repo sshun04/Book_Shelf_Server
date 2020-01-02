@@ -5,11 +5,16 @@ import (
 	"bookstorage_web/server/controller/auth/facebook"
 	"bookstorage_web/server/controller/auth/github"
 	"bookstorage_web/server/controller/books"
+	"bookstorage_web/server/dao"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
+	if err := dao.DBInit(); err != nil{
+		fmt.Println(err.Error())
+	}
 
 	authorized := router.Group("/user")
 	authorized.Use(auth.MustAuthenticated())
