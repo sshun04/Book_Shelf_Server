@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bookstorage_web/server/dao"
 	"bookstorage_web/server/model"
 	"encoding/json"
 	"fmt"
@@ -24,24 +25,45 @@ func TestSignUp(t *testing.T) {
 
 	if user.EmailAddress == "" {
 		t.Error("error user email_address is blank")
-	}else {
-		fmt.Println("emailAddress: "+ user.EmailAddress)
+	} else {
+		fmt.Println("emailAddress: " + user.EmailAddress)
 	}
 
 	if user.Password == "" {
 		t.Error("error user password is blank")
-	}else {
+	} else {
 		fmt.Println("password: " + user.Password)
 	}
 
 	hashedPassWord := hashStringPassWord(user.Password)
 	user.Password = hashedPassWord
 
-	fmt.Println("hashed password: "+user.Password)
+	fmt.Println("hashed password: " + user.Password)
 
 	jwtAccessToken := GetJwtAccessToken(user)
 
-	fmt.Println("jwtAccessToken: "+jwtAccessToken)
+	fmt.Println("jwtAccessToken: " + jwtAccessToken)
+
+}
+
+func TestLogin(t *testing.T) {
+
+}
+
+func TestValidateUser(t *testing.T) {
+	demoTarget := model.User{
+		EmailAddress: "kk@gmail.com",
+		Password:     "kk",
+	}
+
+	hashedPass := hashStringPassWord(demoTarget.Password)
+	demoTarget.Password = hashedPass
+
+	if dao.SearchUser(demoTarget) {
+		fmt.Println("Got appropriate result")
+	} else {
+		t.Error("Error")
+	}
 
 }
 
@@ -52,6 +74,6 @@ func TestHashStringPassWord(t *testing.T) {
 		t.Error(err.Error())
 	}
 	fmt.Println("パスワード: ", demoPassword)
-	fmt.Println("ハッシュ化されたパスワード",hashedPassword)
-	fmt.Println("コンバート後のパスワード: ",hashedPassword)
+	fmt.Println("ハッシュ化されたパスワード", hashedPassword)
+	fmt.Println("コンバート後のパスワード: ", hashedPassword)
 }

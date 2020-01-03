@@ -5,6 +5,7 @@ import (
 )
 type Error struct {
 	Message string `json:"message"`
+	error
 }
 
 type BaseModel struct {
@@ -14,3 +15,6 @@ type BaseModel struct {
 	DeletedAt *time.Time `json:"deletedAt"`
 }
 
+func (_ Error)Error() string {
+	return ""
+}

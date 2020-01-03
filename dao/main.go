@@ -49,15 +49,22 @@ func Create(dbModel interface{}) error {
 	return nil
 }
 
-func SearchUser(emailAddress string) (model.User, error) {
+func SearchUserByEmail(emailAddress string) (model.User, error) {
 	var user model.User
 	db, err := GormConnect()
 	if err != nil {
 		return user, err
 	}
-	db.Table("users").Where("email_address = ?",emailAddress).First(&user)
+	db.Table("users").Where("email_address = ?", emailAddress).First(&user)
 	defer db.Close()
-	return user,nil
+	return user, nil
+}
+
+func SearchUser(user model.User) bool {
+	db, _ := GormConnect()
+	var u model.User
+	isExist := !db.Table("users").Where("email_address = ? AND password = ?", user.EmailAddress, user.Password).First(&u).RecordNotFound()
+	return isExist
 }
 
 func GetBooksById(ownerId uint) {

@@ -89,12 +89,28 @@ func TestGetUser(t *testing.T) {
 	defer db.Close()
 }
 
-func TestSearchUser(t *testing.T) {
-	if user, err := SearchUser("kk@gmail.com"); err != nil {
+func TestSearchUserByEmail(t *testing.T) {
+	if user, err := SearchUserByEmail("kk@gmail.com"); err != nil {
 		t.Error(err.Error())
-	} else if user.Name == "" && user.EmailAddress =="" && user.Password== "" {
+	} else if user.Name == "" && user.EmailAddress == "" && user.Password == "" {
 		t.Error("user is blank")
-	}else {
+	} else {
 		fmt.Println(user.Name)
+	}
+}
+
+func TestSearchUser(t *testing.T) {
+	user1 := model.User{EmailAddress: "kk@gmail.com", Password: "kk"}
+	if SearchUser(user1) {
+		fmt.Println("got an appropriate user")
+	} else {
+		t.Error("Error Could not get an appropriate user ")
+	}
+
+	user2 := model.User{EmailAddress: "kk@gmail.com", Password: "aa"}
+	if  SearchUser(user2) {
+		t.Error("expect get an error but didn't ")
+	} else {
+		fmt.Println("got appropriate result")
 	}
 }

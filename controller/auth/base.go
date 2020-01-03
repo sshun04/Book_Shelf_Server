@@ -72,11 +72,30 @@ func Login(ctx *gin.Context) {
 	}
 	if user.EmailAddress == "" {
 		ctx.JSON(http.StatusNotAcceptable, "email cannot be blank")
+		return
 	}
 	if user.Password == "" {
 		ctx.JSON(http.StatusNotAcceptable, "password cannot be blank")
+		return
 	}
 
+	if err := ValidateUser(user); err.Message != "" {
+		fmt.Println(err.Message)
+	} else {
+		jwtAccessToken := GetJwtAccessToken(user)
+		ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
+	}
+
+}
+
+func ValidateUser(target model.User) model.Error {
+	hashedPass := hashStringPassWord(target.Password)
+	target.Password = hashedPass
+	if dao.SearchUser(target) {
+		return model.Error{Message: ""}
+	} else {
+		return model.Error{Message: "EmailAddress of Password is wrong"}
+	}
 }
 
 func hashStringPassWord(password string) string {
