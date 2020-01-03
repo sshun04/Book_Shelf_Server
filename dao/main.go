@@ -39,12 +39,12 @@ func DBInit() error {
 }
 
 // データベースへの登録
-func Create(dbModel interface{},tableName string) error {
+func Create(dbModel interface{}) error {
 	db, err := GormConnect()
 	if err != nil {
 		return err
 	}
-	db.Table(tableName).Create(dbModel)
+	db.Model(dbModel).Create(dbModel)
 	defer db.Close()
 	return nil
 }

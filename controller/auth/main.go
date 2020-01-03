@@ -54,7 +54,7 @@ func SignUp(ctx *gin.Context) {
 	hashedPassword := hashStringPassWord(user.Password)
 	user.Password = hashedPassword
 
-	if savingerr := dao.Create(&user, "users"); savingerr != nil {
+	if savingerr := dao.Create(&user); savingerr != nil {
 		fmt.Println(savingerr.Error())
 		return
 	}

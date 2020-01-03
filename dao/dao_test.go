@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 		Name:         "S",
 		EmailAddress: "ss@gmail.com",
 		Password:     "ss",}
-	if err := db.Create(&user).Error; err != nil {
+	if err := db.Create(user).Error; err != nil {
 		t.Error("Error create User :", err.Error())
 	}
 
@@ -53,14 +53,14 @@ func TestCreate(t *testing.T) {
 		EmailAddress: "kk@gmail.com",
 		Password:     "kk",
 	}
-	if err := Create(&user2,"users"); err != nil {
+	if err := Create(user2); err != nil {
 		t.Error(err.Error())
 	}
 
 	user3 := &model.User{
-		Name:"c",
-		EmailAddress:"cc@gmail.com",
-		Password:"cc",
+		Name:         "c",
+		EmailAddress: "cc@gmail.com",
+		Password:     "cc",
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user3.Password), 10)
@@ -84,7 +84,7 @@ func TestCreate(t *testing.T) {
 		OwnerId: 1,
 		State:   "未読",
 	}
-	if err := db.Create(bookPersonal).Error; err != nil {
+	if err := db.Create(&bookPersonal).Error; err != nil {
 		t.Error("Error create BookPersonal :", err.Error())
 	}
 
@@ -121,21 +121,21 @@ func TestSearchUser(t *testing.T) {
 	}
 
 	user2 := model.User{EmailAddress: "kk@gmail.com", Password: "aa"}
-	if  SearchUser(user2) {
+	if SearchUser(user2) {
 		t.Error("expect get an error but didn't ")
 	} else {
 		fmt.Println("got appropriate result")
 	}
 
-	user3 := model.User{EmailAddress:"aaaaaa@gmail.com",Password:"kk"}
-	if  SearchUser(user3) {
+	user3 := model.User{EmailAddress: "aaaaaa@gmail.com", Password: "kk"}
+	if SearchUser(user3) {
 		t.Error("expect get an error but didn't ")
 	} else {
 		fmt.Println("got appropriate result")
 	}
 
-	user4 := model.User{EmailAddress:"cc@gmail.com",Password:"cc"}
-	if  SearchUser(user4) {
+	user4 := model.User{EmailAddress: "cc@gmail.com", Password: "cc"}
+	if SearchUser(user4) {
 		t.Error("expect get an error but didn't ")
 	} else {
 		fmt.Println("got appropriate result")

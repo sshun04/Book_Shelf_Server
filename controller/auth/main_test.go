@@ -39,7 +39,7 @@ func TestSignUp(t *testing.T) {
 	hashedPassWord := hashStringPassWord(user.Password)
 	user.Password = hashedPassWord
 
-	dao.Create(&user, "users")
+	dao.Create(user)
 
 	fmt.Println("hashed password: " + user.Password)
 
