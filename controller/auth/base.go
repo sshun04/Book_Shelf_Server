@@ -54,7 +54,7 @@ func SignUp(ctx *gin.Context) {
 	hashedPassword := hashStringPassWord(user.Password)
 	user.Password = hashedPassword
 
-	if savingerr := dao.Create(user); savingerr != nil {
+	if savingerr := dao.Create(&user, "users"); savingerr != nil {
 		fmt.Println(savingerr.Error())
 		return
 	}
@@ -79,23 +79,24 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	if err := ValidateUser(user); err.Message != "" {
-		fmt.Println(err.Message)
-	} else {
+	if ValidateUser(user) {
 		jwtAccessToken := GetJwtAccessToken(user)
 		ctx.JSON(http.StatusOK, gin.H{"accessToken": jwtAccessToken})
+	} else {
+		ctx.JSON(http.StatusNotAcceptable, "Email or Password is wrong")
 	}
-
 }
 
-func ValidateUser(target model.User) model.Error {
-	hashedPass := hashStringPassWord(target.Password)
-	target.Password = hashedPass
-	if dao.SearchUser(target) {
-		return model.Error{Message: ""}
-	} else {
-		return model.Error{Message: "EmailAddress of Password is wrong"}
+func ValidateUser(target model.User) bool {
+	registered, err1 := dao.SearchUserByEmail(target.EmailAddress)
+	if err1 != nil {
+		return false
 	}
+	err2 := bcrypt.CompareHashAndPassword([]byte(registered.Password), []byte(target.Password))
+	if err2 != nil {
+		return false
+	}
+	return true
 }
 
 func hashStringPassWord(password string) string {

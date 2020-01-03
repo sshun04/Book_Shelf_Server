@@ -13,5 +13,11 @@
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/debug</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="debug [3]" uuid="cde9dec8-5a9f-49f4-9fc6-49c91d584018">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/controller/auth/debug</jdbc-url>
+    </data-source>
   </component>
 </project>

@@ -39,12 +39,12 @@ func DBInit() error {
 }
 
 // データベースへの登録
-func Create(dbModel interface{}) error {
+func Create(dbModel interface{},tableName string) error {
 	db, err := GormConnect()
 	if err != nil {
 		return err
 	}
-	db.Create(dbModel)
+	db.Table(tableName).Create(dbModel)
 	defer db.Close()
 	return nil
 }
@@ -63,8 +63,8 @@ func SearchUserByEmail(emailAddress string) (model.User, error) {
 func SearchUser(user model.User) bool {
 	db, _ := GormConnect()
 	var u model.User
-	isExist := !db.Table("users").Where("email_address = ? AND password = ?", user.EmailAddress, user.Password).First(&u).RecordNotFound()
-	return isExist
+	notFound := db.Table("users").Where("email_address=? and password=?", user.EmailAddress, user.Password).First(&u).RecordNotFound()
+	return !notFound
 }
 
 func GetBooksById(ownerId uint) {

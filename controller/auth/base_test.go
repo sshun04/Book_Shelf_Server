@@ -10,6 +10,7 @@ import (
 )
 
 func TestSignUp(t *testing.T) {
+	dao.DBInit()
 	var user model.User
 	demoUserJson := []byte(`{"user_name":"Alice","email_address":"alice@gmail.com","password":"passdesuyo"}`)
 
@@ -38,6 +39,8 @@ func TestSignUp(t *testing.T) {
 	hashedPassWord := hashStringPassWord(user.Password)
 	user.Password = hashedPassWord
 
+	dao.Create(&user, "users")
+
 	fmt.Println("hashed password: " + user.Password)
 
 	jwtAccessToken := GetJwtAccessToken(user)
@@ -51,29 +54,47 @@ func TestLogin(t *testing.T) {
 }
 
 func TestValidateUser(t *testing.T) {
-	demoTarget := model.User{
-		EmailAddress: "kk@gmail.com",
-		Password:     "kk",
+	targetTrue := model.User{
+		Name:         "s",
+		EmailAddress: "s@gmail.com",
+		Password:     "oh"}
+
+	registered := model.User{
+		Name:         "s",
+		EmailAddress: "s@gmail.com",
+		Password:     hashStringPassWord("oh"),
 	}
 
-	hashedPass := hashStringPassWord(demoTarget.Password)
-	demoTarget.Password = hashedPass
-
-	if dao.SearchUser(demoTarget) {
-		fmt.Println("Got appropriate result")
+	result1 := bcrypt.CompareHashAndPassword([]byte(registered.Password), []byte(targetTrue.Password))
+	if result1 == nil {
+		fmt.Println("Validation1 Success")
 	} else {
-		t.Error("Error")
+		t.Error(result1.Error())
+	}
+
+	targetFlase := model.User{
+		Name:         "s",
+		EmailAddress: "s@gmail.com",
+		Password:     "o",
+	}
+
+	result2 := bcrypt.CompareHashAndPassword([]byte(registered.Password), []byte(targetFlase.Password))
+	if result2 == nil {
+		t.Error("Validation2 Expected false but got true")
+	} else {
+		fmt.Println("Validation2 Success")
 	}
 
 }
 
 func TestHashStringPassWord(t *testing.T) {
-	demoPassword := "kskskksks"
+	demoPassword := "oh"
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(demoPassword), 10)
 	if err != nil {
 		t.Error(err.Error())
 	}
+	hashedStringPass := string(hashedPassword)
 	fmt.Println("パスワード: ", demoPassword)
 	fmt.Println("ハッシュ化されたパスワード", hashedPassword)
-	fmt.Println("コンバート後のパスワード: ", hashedPassword)
+	fmt.Println("コンバート後のパスワード: ", hashedStringPass)
 }
